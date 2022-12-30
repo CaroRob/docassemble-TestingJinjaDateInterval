@@ -1,0 +1,94 @@
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  interim_order_date_question
+  final_order_date_question
+  see_results
+  get_test_file
+---
+question: |
+  What is the date the court sent your interim child support order?
+subquestion: |
+  You can find the date the court sent you your child support order at the bottom of your child support order.  The Certificate of Distribution lists the day court staff sent the order to you.
+fields:
+  - "The date your your order was distributed": interim_order_date
+    # label above field: True
+    datatype: date
+    disable if: interim_order_period
+  - I do not have the exact date: interim_order_period
+    datatype: yesno
+    enable if: 
+      variable: interim_order_date
+      is: null
+    # label show above
+  - no label: guess_interim_order_date
+    enable if: interim_order_period 
+    datatype: radio
+    choices:
+      - It was in the last 10 days: within 10 days
+      - It was more than 10 days ago: more than 10 days
+      - I do not know: unknown 
+continue button field: interim_order_date_question
+---
+question: |
+  What is the date the court sent your final child support order?
+subquestion: |
+  You can find the date the court sent you your child support order at the bottom of your child support order.  The Certificate of Distribution lists the day court staff sent the order to you.
+fields:
+  - "The date your your order was distributed": final_order_date
+    # label above field: True
+    datatype: date
+    disable if: final_order_period
+  - I do not have the exact date: final_order_period
+    datatype: yesno
+    enable if: 
+      variable: final_order_date
+      is: null
+    # label show above
+  - no label: guess_final_order_date
+    enable if: final_order_period 
+    datatype: radio
+    choices:
+      - It was in the last 10 days: within 10 days
+      - It was more than 10 days ago but within the last 30 days: between 11 and 30
+      - It was more than 30 days ago: more than 30  
+continue button field: final_order_date_question
+---
+question: |  
+  So the dates are:
+subquestion: | 
+  
+  interim_order_date is: ${interim_order_date}
+ 
+  % if date_difference(starting=interim_order_date, ending=today()).days <= 10:
+  It's been 10 days or less since the interim order 
+  % else:
+  It's been more than 10 days or less since the interim order
+  % endif
+  
+  final_order_date is: ${final_order_date}
+ 
+  % if date_difference(starting=final_order_date, ending=today()).days <= 10:
+  It's been 10 days or less since the final order 
+  % elif date_difference(starting=final_order_date, ending=today()).days > 10 and date_difference(starting=final_order_date, ending=today()).days <= 30:
+  It's been more than 10 days  and less than 30 days since the final order
+  % elif date_difference(starting=final_order_date, ending=today()).days > 30:
+  It's been more than 30 days or less since the final order
+  % endif
+  
+continue button field: see_results
+---
+event: get_test_file
+question: |
+  Testing Jinja code in .docx
+  template
+subquestion: |
+  Let's have a look!
+attachment:
+  name: motions test
+  filename: motions_test
+  skip undefined: True
+  docx template file: test_jinja_in_motions_draft_template_suffolk.docx
+---

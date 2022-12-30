@@ -68,7 +68,7 @@ attachment:
   name: motions test
   filename: motions_test
   skip undefined: True
-  docx template file: test_jinja_in_motions_draft_template.docx
+  docx template file: test_jinja_in_motions_draft_template2.docx
 ---
 #attachments:
 #  #  - name: Post-interview-Instructions
