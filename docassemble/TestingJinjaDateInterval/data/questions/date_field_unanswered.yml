@@ -27,12 +27,22 @@ fields:
       - I do not know: unknown 
 continue button field: interim_order_date_question
 ---
+mandatory: true
+question: |  
+  So the date is:
+subquestion: | 
+  
+  ${distrib_cert_date}
+ 
+  % if date_difference(starting=distrib_cert_date, ending=today()).days <= 10:
+  True
+  % else:
+  False
+  % endif
 
-# question: |
-#   So the date is:
-# subquestion: |
-#   
-# ---
+  
+
+---
 comment: |
   if we use review screens or any feature that allows user to change their answers, we must call the reconsider function in a code block and we cannot use `depends on` or `needs`
 # code: |
@@ -42,7 +52,11 @@ comment: |
 #   motion_to_reconsider = True
 #  else:
 #   
-# ---
+#  ${today().minus(as_datetime(distrib_cert_date)) }
+#  ${(format_date(distrib_cert_date) - today) } 
+#  ${ today() - (format_date( distrib_cert_date)) }.
+#  ${ format_date( distrib_cert_date - date_interval(days=10) ) }.
+---
 ---
 event: get_test_file
 question: |
@@ -54,7 +68,7 @@ attachment:
   name: motions test
   filename: motions_test
   skip undefined: True
-  docx template file: test_jinja_in_motions_draft_template3.docx
+  docx template file: test_jinja_in_motions_draft_template.docx
 ---
 #attachments:
 #  #  - name: Post-interview-Instructions
