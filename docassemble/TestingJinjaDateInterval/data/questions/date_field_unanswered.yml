@@ -1,0 +1,68 @@
+comment: |
+  This block includes the logic for standalone interviews.
+  Delete mandatory: True to include in another interview
+mandatory: True
+code: |
+  interim_order_date_question
+  get_test_file
+---
+question: |
+  What is the date on your certificate of distribution?
+fields:
+  - date: distrib_cert_date
+    datatype: date
+    disable if: distrib_cert_period
+  - I do not have the exact date: distrib_cert_period
+    datatype: yesno
+    enable if: 
+      variable: distrib_cert_date
+      is: null
+    # label show above
+  - no label: guess_date
+    enable if: distrib_cert_period 
+    datatype: radio
+    choices:
+      - It was in the last 10 days: within 10 days
+      - It was more than 10 days ago: more than 10 days
+      - I do not know: unknown 
+continue button field: interim_order_date_question
+---
+
+# question: |
+#   So the date is:
+# subquestion: |
+#   
+# ---
+comment: |
+  if we use review screens or any feature that allows user to change their answers, we must call the reconsider function in a code block and we cannot use `depends on` or `needs`
+# code: |
+#  if defined('distrib_cert_date') and today - distrib_cert_date <= 10:
+#   motion_to_reconsider = True
+#  elif defined('guess_date') and guess_date == 'within 10 days':
+#   motion_to_reconsider = True
+#  else:
+#   
+# ---
+---
+event: get_test_file
+question: |
+  Testing Jinja code in .docx
+  template
+subquestion: |
+  Let's have a look!
+attachment:
+  name: motions test
+  filename: motions_test
+  skip undefined: True
+  docx template file: test_jinja_in_motions_draft_template3.docx
+---
+#attachments:
+#  #  - name: Post-interview-Instructions
+#  #    filename: child_support_draft_template_next_steps
+#  #    docx template file: child_support_draft_template_next_steps.docx
+#  #    variable name: child_support_draft_template_Post_interview_instructions[i]
+#  - name: test motions template
+#    filename: test_jinja_in_motions_draft_template
+#    variable name: test_jinja_in_motions_draft_template_attachment[i]
+#    skip undefined: True
+#    docx template file: test_jinja_in_motions_draft_template.docx
